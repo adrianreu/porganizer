@@ -7,8 +7,18 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') },
       { path: 'projects', component: () => import('pages/ProjectsPage.vue') },
+      { path: 'todos', component: () => import('pages/TodosPage.vue') },
+      { path: 'todos', component: () => import('pages/TodosPage.vue') },
+    ],
+  },
+
+  {
+    path: '/',
+    component: () => import('layouts/WithoutFooterLayout.vue'),
+    children: [
       { path: 'projects/:id', component: () => import('pages/ProjectDetailPage.vue') },
       { path: 'projects/:projectId/tasks/:taskId', component: () => import('pages/TaskDetailPage.vue') },
+      { path: 'todos/:id', component: () => import('pages/TodoDetailPage.vue') },
     ],
   },
 

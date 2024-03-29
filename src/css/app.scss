@@ -1,1 +1,6 @@
 // app global css in SCSS form
+.overflow {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}

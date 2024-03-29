@@ -23,7 +23,7 @@
       dense
       emit-value
       map-options
-        dropdown-icon="mdi-chevron-down"
+      dropdown-icon="mdi-chevron-down"
     />
     <q-select
       v-model="task.precondition"
@@ -34,6 +34,8 @@
       emit-value
       map-options
       dropdown-icon="mdi-chevron-down"
+      clearable
+      clear-icon="mdi-close"
     />
     <q-checkbox
       v-model="task.completed"
@@ -63,6 +65,16 @@
           unelevated
           @click="save"
         >Save</q-btn>
+      </div>
+      <div class="col-shrink" v-if="taskId !== 'new'">
+        <q-btn
+          round
+          icon="mdi-delete"
+          flat
+          color="red-10"
+          dense
+          @click="deleteTaskFromProject"
+        ></q-btn>
       </div>
     </div>
   </q-footer>
@@ -123,6 +135,15 @@ function save() {
     const projectIdParsed = Number.parseInt(projectId.value.toString(), 10);
     projectStore.addTaskToProject(projectIdParsed, task.value);
     router.replace(`/projects/${projectId.value}/tasks/${task.value.id}`);
+  }
+}
+
+function deleteTaskFromProject() {
+  if (taskId.value && taskId.value !== 'new') {
+    const projectIdParsed = Number.parseInt(projectId.value.toString(), 10);
+    const taskIdParsed = Number.parseInt(taskId.value.toString(), 10);
+    projectStore.deleteTaskFromProject(projectIdParsed, taskIdParsed);
+    router.replace(`/projects/${projectId.value}`);
   }
 }
 

@@ -1,7 +1,7 @@
-import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
 import { useStorage } from '@vueuse/core';
-import { Project, Task } from './interfaces';
+import { defineStore } from 'pinia';
+import { computed } from 'vue';
+import { Priority, Project, Task } from './interfaces';
 
 const PROJECT_STORE_KEY = 'projects';
 
@@ -9,6 +9,7 @@ interface TaskWithProjectId extends Task {
   projectId: number;
   projectColor: string;
   projectName: string;
+  projectPriority: Priority;
 }
 
 export const useProjectStore = defineStore(PROJECT_STORE_KEY, () => {
@@ -54,6 +55,7 @@ export const useProjectStore = defineStore(PROJECT_STORE_KEY, () => {
         projectId: project.id,
         projectName: project.name,
         projectColor: project.color,
+        projectPriority: project.priority,
       }] : [];
     }).sort((a, b) => b.priority - a.priority);
   });
@@ -85,6 +87,14 @@ export const useProjectStore = defineStore(PROJECT_STORE_KEY, () => {
     projects.value = projects.value.filter((project) => project.id !== id);
   }
 
+  function deleteTaskFromProject(projectId: number, taskId: number) {
+    const project = getProjectById(projectId);
+    if (!project) {
+      throw new Error('Project not found');
+    }
+    project.tasks = project.tasks.filter((task) => task.id !== taskId);
+  }
+
   function addTaskToProject(projectId: number, task: Task) {
     const project = getProjectById(projectId);
     if (!project) {
@@ -113,5 +123,6 @@ export const useProjectStore = defineStore(PROJECT_STORE_KEY, () => {
     getTaskById,
     deleteProject,
     toggleTaskCompletion,
+    deleteTaskFromProject,
   };
 });

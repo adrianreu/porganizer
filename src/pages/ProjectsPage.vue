@@ -25,20 +25,6 @@
         Create project
       </q-btn>
     </div>
-    <q-footer class="bg-white q-pa-md" bordered>
-      <div class="row justify-between q-col-gutter-md">
-        <div class="col-shrink">
-          <q-btn
-            round
-            icon="mdi-arrow-left"
-            flat
-            color="black"
-            dense
-            @click="router.push('/')"
-          ></q-btn>
-        </div>
-      </div>
-    </q-footer>
   </q-page>
 
 </template>
