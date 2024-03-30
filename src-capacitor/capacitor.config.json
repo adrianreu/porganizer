@@ -3,6 +3,7 @@
   "appName": "Porganizer",
   "webDir": "www",
   "server": {
-    "androidScheme": "https"
+    "androidScheme": "https",
+    "url": "http://192.168.178.43:9500"
   }
 }

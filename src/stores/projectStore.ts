@@ -1,6 +1,8 @@
 import { useStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
 import { computed } from 'vue';
+import { date } from 'quasar';
+import { flatOutDate } from 'src/utils/dateUtils';
 import { Priority, Project, Task } from './interfaces';
 
 const PROJECT_STORE_KEY = 'projects';
@@ -23,33 +25,33 @@ export const useProjectStore = defineStore(PROJECT_STORE_KEY, () => {
   const sortedProjectsByPriority = computed<Project[]>(
     // sort projects by priority in descending order and with tasks
     () => projects.value
-      .sort((a, b) => b.priority - a.priority),
+      .toSorted((a, b) => b.priority - a.priority),
   );
 
   const dailyProjectTasks = computed<TaskWithProjectId[]>(() => {
     const importantProjects = projects.value
       .filter((project) => project.tasks.length > 0)
-      .sort((a, b) => b.priority - a.priority)
+      .toSorted((a, b) => b.priority - a.priority)
       .slice(0, 3);
     // get important first task from each project which
-    // has no precondition or a completed precondition
-    // and is only completed today
+    // is only completed today
     // completed in past will be ignored
+    const today = flatOutDate(new Date());
     return importantProjects.flatMap((project) => {
-      const foundTask = project.tasks.find((task: Task) => {
-        if (task.completedAt !== null) {
-          const completedAt = new Date(task.completedAt);
-          const today = new Date();
-          if (completedAt?.getDate() < today.getDate()
-            || completedAt?.getMonth() < today.getMonth()
-            || completedAt?.getFullYear() < today.getFullYear()) {
-            return false;
+      const foundTask = project.tasks
+        .toSorted((a, b) => b.priority - a.priority)
+        .find((task: Task) => {
+          if (task.completedAt !== null) {
+            const completedAt = flatOutDate(new Date(task.completedAt));
+            const diff = date.getDateDiff(today, completedAt, 'days');
+            if (diff < 0) {
+              return false;
+            }
           }
-        }
-        return !task.precondition || project.tasks.some(
-          (t) => t.id === task.precondition && t.completed,
-        );
-      });
+          return !task.precondition || project.tasks.some(
+            (t) => t.id === task.precondition && t.completed,
+          );
+        });
       return foundTask ? [{
         ...foundTask,
         projectId: project.id,
@@ -80,7 +82,10 @@ export const useProjectStore = defineStore(PROJECT_STORE_KEY, () => {
       throw new Error('Task not found');
     }
     task.completed = !task.completed;
-    task.completedAt = task.completed ? new Date() : null;
+    const today = date.adjustDate(new Date(), {
+      hours: 0, minutes: 0, seconds: 0, milliseconds: 0,
+    });
+    task.completedAt = task.completed ? today : null;
   }
 
   function deleteProject(id: number) {

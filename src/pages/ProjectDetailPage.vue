@@ -66,9 +66,9 @@
     <div class="text-grey-7 text-weight-medium">Tasks</div>
   </div>
 
-  <q-list separator v-if="project.tasks?.length">
+  <q-list separator v-if="sortedTasks?.length">
     <preview-row
-      v-for="task in project.tasks"
+      v-for="task in sortedTasks"
       :key="task.id"
       :show-checkbox="false"
       :model-value="task.completed"
@@ -189,6 +189,8 @@ const project = ref<Project>({
   tasks: [],
   description: '',
 });
+
+const sortedTasks = computed(() => project.value.tasks.toSorted((a, b) => b.priority - a.priority));
 
 const id = computed(() => route.params.id);
 

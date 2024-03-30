@@ -1,6 +1,7 @@
 import { useStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
 import { date } from 'quasar';
+import { flatOutDate } from 'src/utils/dateUtils';
 
 const TODO_STORE_KEY = 'todos';
 
@@ -35,15 +36,20 @@ export const useTodoStore = defineStore(TODO_STORE_KEY, () => {
     const todo = todos.value.find((todoX) => todoX.id === id);
     if (todo) {
       todo.completed = !todo.completed;
-      todo.completedAt = todo.completed ? new Date() : null;
+      const today = date.adjustDate(new Date(), {
+        hours: 0, minutes: 0, seconds: 0, milliseconds: 0,
+      });
+      todo.completedAt = todo.completed ? today : null;
     }
   }
 
   function cleanUp() {
+    const today = flatOutDate(new Date());
+
     // reset todo if it is repeatable and completed not today
     todos.value.forEach((todo) => {
-      const today = new Date();
-      const diff = date.getDateDiff(today, todo.completedAt, 'days');
+      const completedAt = flatOutDate(new Date(todo.completedAt || ''));
+      const diff = date.getDateDiff(today, completedAt, 'days');
       if (todo.repeatable && todo.completedAt && diff > 1) {
         todo.completed = false;
         todo.completedAt = null;

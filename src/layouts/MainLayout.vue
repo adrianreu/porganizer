@@ -3,7 +3,7 @@
   <q-page-container>
     <router-view />
   </q-page-container>
-  <q-footer bordered class="bg-white">
+  <q-footer bordered class="bg-transparent" style="backdrop-filter: blur(6px);">
     <q-tabs dense class="text-grey-10">
       <q-route-tab
         to="/"
