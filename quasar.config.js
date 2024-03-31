@@ -30,7 +30,7 @@ module.exports = configure((/* ctx */) => ({
   // --> boot files are part of "main.js"
   // https://v2.quasar.dev/quasar-cli-vite/boot-files
   boot: [
-
+    'cleanUp',
   ],
 
   // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css

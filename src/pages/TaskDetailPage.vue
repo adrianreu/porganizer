@@ -15,16 +15,7 @@
       outlined
       dense
     />
-    <q-select
-      v-model="task.priority"
-      :options="priorityOptions"
-      label="Priority"
-      outlined
-      dense
-      emit-value
-      map-options
-      dropdown-icon="mdi-chevron-down"
-    />
+    <priority-select v-model="task.priority" />
     <q-select
       v-model="task.precondition"
       :options="taskPreconditionOptions"
@@ -38,13 +29,16 @@
       clear-icon="mdi-close"
     />
     <q-checkbox
-      v-model="task.completed"
+      :model-value="task.completed"
       label="Completed"
       color="primary"
       dense
+      @update:model-value="
+      projectStore.toggleTaskCompletion(Number.parseInt(projectId.toString(), 10), task.id)
+      "
     />
   </div>
-  <q-footer class="bg-white q-pa-md" bordered>
+  <q-footer class="bg-white q-pa-md" bordered style="backdrop-filter: blur(6px)">
     <div class="row justify-between q-col-gutter-md">
       <div class="col-shrink">
         <q-btn
@@ -86,21 +80,11 @@ import { computed, onMounted, ref } from 'vue';
 import { Priority, Task } from 'src/stores/interfaces';
 import { useRoute, useRouter } from 'vue-router';
 import { useProjectStore } from 'src/stores/projectStore';
+import PrioritySelect from 'src/components/PrioritySelect.vue';
 
 const route = useRoute();
 const router = useRouter();
 const projectStore = useProjectStore();
-
-const priorityOptions = ref<{
-    label: string;
-    value: Priority;
-  }[]>([
-    { label: 'Lower', value: Priority.Lower },
-    { label: 'Low', value: Priority.Low },
-    { label: 'Medium', value: Priority.Medium },
-    { label: 'High', value: Priority.High },
-    { label: 'Higher', value: Priority.Higher },
-  ]);
 
 const task = ref<Task>({
   id: -1,

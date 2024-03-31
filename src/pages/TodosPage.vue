@@ -6,9 +6,10 @@
         v-for="todo in todos"
         :key="todo.id"
         :show-checkbox="true"
-        :model-value="false"
+        :model-value="todo.completed"
         :text="todo.name"
         :daily="todo.repeatable"
+        @update:model-value="todoStore.toggleCompletion(todo.id)"
         @click="router.push(`/todos/${todo.id}`)"
       />
     </q-list>

@@ -31,6 +31,7 @@ export const useProjectStore = defineStore(PROJECT_STORE_KEY, () => {
   const dailyProjectTasks = computed<TaskWithProjectId[]>(() => {
     const importantProjects = projects.value
       .filter((project) => project.tasks.length > 0)
+      .filter((project) => project.tasks.find((task) => !task.completed))
       .toSorted((a, b) => b.priority - a.priority)
       .slice(0, 3);
     // get important first task from each project which
@@ -44,7 +45,8 @@ export const useProjectStore = defineStore(PROJECT_STORE_KEY, () => {
           if (task.completedAt !== null) {
             const completedAt = flatOutDate(new Date(task.completedAt));
             const diff = date.getDateDiff(today, completedAt, 'days');
-            if (diff < 0) {
+            console.log('task', task.id, task.name, task.completedAt, diff);
+            if (diff > 0) {
               return false;
             }
           }

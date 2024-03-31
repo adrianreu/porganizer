@@ -45,19 +45,21 @@ export const useTodoStore = defineStore(TODO_STORE_KEY, () => {
 
   function cleanUp() {
     const today = flatOutDate(new Date());
-
+    const todosToFilterOut: number[] = [];
     // reset todo if it is repeatable and completed not today
     todos.value.forEach((todo) => {
       const completedAt = flatOutDate(new Date(todo.completedAt || ''));
       const diff = date.getDateDiff(today, completedAt, 'days');
-      if (todo.repeatable && todo.completedAt && diff > 1) {
+      if (todo.repeatable && todo.completedAt && diff > 0) {
         todo.completed = false;
         todo.completedAt = null;
       }
-      if (!todo.repeatable && todo.completed && diff > 1) {
-        todos.value = todos.value.filter((t) => t.id !== todo.id);
+      if (!todo.repeatable && todo.completed && diff > 0) {
+        todosToFilterOut.push(todo.id);
       }
     });
+
+    todos.value = todos.value.filter((todo) => !todosToFilterOut.includes(todo.id));
   }
 
   return {

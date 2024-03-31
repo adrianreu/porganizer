@@ -22,13 +22,14 @@
         dense
       />
       <q-checkbox
-        v-model="todo.completed"
+        :model-value="todo.completed"
         label="Completed"
         color="grey-10"
         dense
+        @update:model-value="todoStore.toggleCompletion(todo.id)"
       />
     </div>
-    <q-footer class="bg-white q-pa-md" bordered>
+    <q-footer class="bg-white q-pa-md" bordered style="backdrop-filter: blur(6px)">
       <div class="row justify-between q-col-gutter-md">
         <div class="col-shrink">
           <q-btn

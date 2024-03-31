@@ -16,30 +16,7 @@
         outlined
         dense
       />
-      <q-select
-        v-model="project.priority"
-        :options="priorityOptions"
-        label="Priority"
-        outlined
-        dense
-        emit-value
-        map-options
-        dropdown-icon="mdi-chevron-down"
-      >
-        <template v-slot:option="scope">
-          <q-item v-bind="scope.itemProps">
-            <q-item-section avatar>
-              <q-icon
-              :name="getPriorityVisualization(scope.opt.value).icon"
-              :color="getPriorityVisualization(scope.opt.value).color"
-              />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>{{ scope.opt.label }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
+      <priority-select v-model="project.priority" />
       <q-select
         v-model="project.color"
         :options="colorOptions"
@@ -90,7 +67,7 @@
       >Add Task</q-btn>
     </div>
   </div>
-  <q-footer class="bg-white q-pa-md" bordered>
+  <q-footer class="bg-white q-pa-md" bordered style="backdrop-filter: blur(6px)">
     <div class="row justify-between q-col-gutter-md">
       <div class="col-shrink">
         <q-btn round icon="mdi-arrow-left" flat color="black" dense @click="router.go(-1)"></q-btn>
@@ -119,23 +96,12 @@ import { Priority, Project } from 'src/stores/interfaces';
 import { useRoute, useRouter } from 'vue-router';
 import { useProjectStore } from 'src/stores/projectStore';
 import PreviewRow from 'src/components/PreviewRow.vue';
-import { usePriority } from 'src/composables/usePriority';
+import PrioritySelect from 'src/components/PrioritySelect.vue';
 
 const route = useRoute();
 const router = useRouter();
 const projectStore = useProjectStore();
-const { getPriorityVisualization } = usePriority();
 
-const priorityOptions = ref<{
-  label: string;
-  value: Priority;
-}[]>([
-  { label: 'Lower', value: Priority.Lower },
-  { label: 'Low', value: Priority.Low },
-  { label: 'Medium', value: Priority.Medium },
-  { label: 'High', value: Priority.High },
-  { label: 'Higher', value: Priority.Higher },
-]);
 const colorOptions = ref<{
   label: string;
   value: string;
@@ -143,7 +109,6 @@ const colorOptions = ref<{
   { label: 'Red', value: 'red' },
   { label: 'Blue', value: 'blue' },
   { label: 'Green', value: 'green' },
-  { label: 'Yellow', value: 'orange' },
   { label: 'Purple', value: 'purple' },
   { label: 'Grey', value: 'grey' },
   { label: 'Black', value: 'black' },
@@ -160,26 +125,8 @@ const colorOptions = ref<{
   { label: 'Light Green', value: 'light-green' },
   { label: 'Orange', value: 'orange' },
   { label: 'Blue Grey', value: 'blue-grey' },
-  { label: 'Grey', value: 'grey' },
-  { label: 'Brown', value: 'brown' },
-  { label: 'Pink', value: 'pink' },
-  { label: 'Cyan', value: 'cyan' },
-  { label: 'Teal', value: 'teal' },
-  { label: 'Indigo', value: 'indigo' },
-  { label: 'Lime', value: 'lime' },
-  { label: 'Amber', value: 'amber' },
   { label: 'Deep Orange', value: 'deep-orange' },
-  { label: 'Deep Purple', value: 'deep-purple' },
-  { label: 'Light Blue', value: 'light-blue' },
-  { label: 'Light Green', value: 'light-green' },
   { label: 'Orange', value: 'orange' },
-  { label: 'Blue Grey', value: 'blue-grey' },
-  { label: 'Grey', value: 'grey' },
-  { label: 'Brown', value: 'brown' },
-  { label: 'Pink', value: 'pink' },
-  { label: 'Cyan', value: 'cyan' },
-  { label: 'Teal', value: 'teal' },
-  { label: 'Indigo', value: 'indigo' },
 ]);
 const project = ref<Project>({
   id: -1,
